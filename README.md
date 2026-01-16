@@ -106,8 +106,8 @@ We welcome contributions from the open-source community! We believe that medical
 
 Distributed under the **MIT License**. See `LICENSE` for more information.
 
-**Copyright © 2024 MedOral AI.**
-*While this project is open-source, the "MedOral AI" branding, logo, and unique trained model weights are intellectual property of the authors. You are free to use the code, but please provide proper attribution.*
+**Copyright © 2026 hiburavt (MedOral AI).**
+*While this project is open-source, the "MedOral AI" branding, logo, and unique trained model weights are intellectual property of the author. You are free to use the code, but please provide proper attribution.*
 
 ## ⚠️ Medical Disclaimer
 
