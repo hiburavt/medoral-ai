@@ -204,13 +204,15 @@ async def predict(file: UploadFile = File(...)):
         
         # Average the predictions
         # Assuming model returns a single probability score for "Suspicious" class
-        # If output is (Batch, 1):
+        scores = []
         if preds.shape[-1] == 1:
              final_score = float(np.mean(preds))
+             scores = [float(p[0]) for p in preds]
         else:
              # If output is (Batch, 2) softmax [Healthy, Suspicious]
              # We take the second column (Suspicious)
              final_score = float(np.mean(preds[:, 1]))
+             scores = [float(p[1]) for p in preds]
         
         predicted_class = CLASS_NAMES[1] if final_score > 0.5 else CLASS_NAMES[0]
         confidence = final_score if final_score > 0.5 else 1 - final_score
@@ -241,7 +243,7 @@ async def predict(file: UploadFile = File(...)):
             "class": predicted_class,
             "confidence": f"{confidence * 100:.2f}%",
             "raw_score": float(final_score),
-            "tta_score": f"Original: {pred_1:.4f}, Flip: {pred_2:.4f}",
+            "tta_score": f"TTA Avg (Orig: {scores[0]:.2f}, Flip: {scores[1]:.2f})",
             "heatmap": heatmap_b64,
             "disclaimer": "AI result for educational purposes only. Consult a specialist."
         }
