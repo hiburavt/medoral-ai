@@ -87,6 +87,9 @@ We prioritize **Explainable AI (XAI)**. Unlike "black box" models, MedOral AI ge
 4.  **Review**: Examine the AI Heatmap to see which areas are flagged.
 5.  **Report**: Download the comprehensive PDF medical report for patient records.
 
+
+<img width="906" height="731" alt="image" src="https://github.com/user-attachments/assets/fc0654f4-4500-4e1f-89dd-9e323a9aa96f" />
+
 ## 🤝 Contributing
 
 We welcome contributions from the open-source community! We believe that medical AI should be transparent and collaborative.
