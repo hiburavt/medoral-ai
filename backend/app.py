@@ -174,14 +174,43 @@ async def predict(file: UploadFile = File(...)):
         img_array, original_pil = preprocess_image(contents)
         
         # 2. Test-Time Augmentation (TTA)
-        # We predict on the original image and a horizontally flipped version,
-        # then average the results for higher stability.
-        pred_1 = current_model.predict(img_array)[0][0]
+        # We predict on:
+        # 1. Original
+        # 2. Horizontal Flip
+        # 3. Rotate +10 degrees
+        # 4. Rotate -10 degrees
         
-        img_flip = np.flip(img_array, axis=2)
-        pred_2 = current_model.predict(img_flip)[0][0]
+        # Prepare variations
+        variations = []
+        variations.append(original_pil) # Original
+        variations.append(original_pil.transpose(Image.FLIP_LEFT_RIGHT)) # Flip
+        variations.append(original_pil.rotate(10)) # Rotate +10
+        variations.append(original_pil.rotate(-10)) # Rotate -10
+
+        # Preprocess all variations
+        batch_input = []
+        for v in variations:
+            v_resized = v.resize(IMG_SIZE)
+            v_arr = image.img_to_array(v_resized)
+            v_arr = preprocess_input(v_arr)
+            batch_input.append(v_arr)
         
-        final_score = (pred_1 + pred_2) / 2.0
+        batch_input = np.array(batch_input)
+        
+        # Batch prediction
+        # Output shape is (4, 1) or (4, 2) depending on model, assuming (4, 1) for sigmoid
+        # or we take index 0 for each if predict returns a list (unlikely here)
+        preds = current_model.predict(batch_input)
+        
+        # Average the predictions
+        # Assuming model returns a single probability score for "Suspicious" class
+        # If output is (Batch, 1):
+        if preds.shape[-1] == 1:
+             final_score = float(np.mean(preds))
+        else:
+             # If output is (Batch, 2) softmax [Healthy, Suspicious]
+             # We take the second column (Suspicious)
+             final_score = float(np.mean(preds[:, 1]))
         
         predicted_class = CLASS_NAMES[1] if final_score > 0.5 else CLASS_NAMES[0]
         confidence = final_score if final_score > 0.5 else 1 - final_score
