@@ -17,7 +17,7 @@ License: MIT
 """
 
 from fastapi import FastAPI, File, UploadFile, HTTPException, Form
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 import tensorflow as tf
 from tensorflow.keras.models import load_model, Model
